@@ -24,7 +24,7 @@ services:
         container_name: nexashop_webserver_prod
         restart: unless-stopped
         ports:
-            - "127.0.0.1:8080:80"
+            - "80:80"
         depends_on:
             - app
         networks:
