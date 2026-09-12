@@ -1,0 +1,59 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: app
+        container_name: nexashop_app_prod
+        restart: unless-stopped
+        env_file:
+            - .env
+        volumes:
+            - app_storage:/var/www/html/storage
+        depends_on:
+            db:
+                condition: service_healthy
+        networks:
+            - nexashop
+
+    webserver:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: webserver
+        container_name: nexashop_webserver_prod
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:8080:80"
+        depends_on:
+            - app
+        networks:
+            - nexashop
+
+    db:
+        image: mariadb:11
+        container_name: nexashop_db_prod
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_USER: ${DB_USERNAME}
+            MARIADB_PASSWORD: ${DB_PASSWORD}
+            MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        volumes:
+            - db_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            start_period: 15s
+            interval: 5s
+            timeout: 5s
+            retries: 10
+        networks:
+            - nexashop
+
+volumes:
+    app_storage:
+    db_data:
+
+networks:
+    nexashop:
+        driver: bridge

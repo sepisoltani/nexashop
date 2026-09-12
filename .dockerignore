@@ -3,6 +3,7 @@
 .dockerignore
 Dockerfile
 docker-compose.yml
+compose.prod.yml
 
 node_modules
 vendor
