@@ -1,0 +1,76 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: app
+        container_name: nexashop_app
+        restart: unless-stopped
+        environment:
+            APP_NAME: NexaShop
+            APP_ENV: local
+            APP_DEBUG: "true"
+            APP_URL: http://localhost:8080
+            APP_LOCALE: fa
+            APP_FALLBACK_LOCALE: fa
+            APP_FAKER_LOCALE: fa_IR
+            DB_CONNECTION: mariadb
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: nexashop
+            DB_USERNAME: nexashop
+            DB_PASSWORD: nexashop_secret
+            SESSION_DRIVER: database
+            CACHE_STORE: database
+            QUEUE_CONNECTION: database
+        volumes:
+            - app_storage:/var/www/html/storage
+        depends_on:
+            db:
+                condition: service_healthy
+        networks:
+            - nexashop
+
+    webserver:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: webserver
+        container_name: nexashop_webserver
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        depends_on:
+            - app
+        networks:
+            - nexashop
+
+    db:
+        image: mariadb:11
+        container_name: nexashop_db
+        restart: unless-stopped
+        environment:
+            MARIADB_DATABASE: nexashop
+            MARIADB_USER: nexashop
+            MARIADB_PASSWORD: nexashop_secret
+            MARIADB_ROOT_PASSWORD: nexashop_root_secret
+        volumes:
+            - db_data:/var/lib/mysql
+        ports:
+            - "3307:3306"
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            start_period: 15s
+            interval: 5s
+            timeout: 5s
+            retries: 10
+        networks:
+            - nexashop
+
+volumes:
+    app_storage:
+    db_data:
+
+networks:
+    nexashop:
+        driver: bridge
