@@ -1,58 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# نکسا شاپ (NexaShop)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+فروشگاه اینترنتی نمونه برای لوازم دیجیتال، ساخته‌شده با Laravel و Blade به‌صورت کاملاً فارسی و راست‌به‌چپ (RTL). این پروژه به‌عنوان اپلیکیشن نمونه در یک دوره آموزشی Docker، VPS و CI/CD استفاده می‌شود و به‌عمد ساده نگه داشته شده است.
 
-## About Laravel
+## پشته فناوری
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 13 + Blade
+- SQLite برای توسعه محلی (سازگار با MariaDB برای استفاده بعدی در Docker)
+- Tailwind CSS v4
+- فونت Vazirmatn (self-hosted از طریق Vite)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## راه‌اندازی محلی
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+پیش‌نیاز: PHP 8.3+، Composer، Node.js و npm.
 
 ```bash
-composer require laravel/boost --dev
+composer install
+npm install
 
-php artisan boost:install
+cp .env.example .env   # اگر فایل .env از قبل وجود ندارد
+php artisan key:generate
+
+touch database/database.sqlite
+
+php artisan migrate --seed
+
+npm run build   # یا: npm run dev برای توسعه با هات‌ریلود
+
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+سپس:
 
-## Contributing
+- فروشگاه: http://127.0.0.1:8000
+- ورود مدیر: http://127.0.0.1:8000/admin/login
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## اطلاعات ورود مدیر (فقط محیط توسعه)
 
-## Code of Conduct
+| ایمیل | رمز عبور |
+| --- | --- |
+| `admin@nexashop.test` | `password` |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+این کاربر توسط `database/seeders/DatabaseSeeder.php` ساخته می‌شود. **این مقادیر صرفاً برای محیط توسعه محلی هستند و نباید در محیط پروڈاکشن استفاده شوند.**
 
-## Security Vulnerabilities
+## داده‌های نمونه
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+سیدرها ۱۰ محصول واقعی (هدفون، کیبورد، ماوس، وبکم، هاب USB-C، شارژر، اسپیکر و لوازم جانبی) را همراه با تصاویر واقعی محصول در `public/images/products/` ایجاد می‌کنند.
 
-## License
+برای بازسازی کامل دیتابیس محلی:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate:fresh --seed
+```
+
+## چه چیزی در این پروژه پیاده‌سازی شده
+
+- صفحه اصلی، لیست محصولات و صفحه جزئیات محصول (کاملاً عمومی، بدون نیاز به ورود)
+- پنل مدیریت ساده با احراز هویت (ورود/خروج) و CRUD کامل محصولات
+- بدون سبد خرید، پرداخت، سفارش یا هر منطق تجاری واقعی — دکمه «افزودن به سبد خرید» فقط نمایشی است
+
+## یادداشت‌ها برای مرحله بعد (Docker / MariaDB)
+
+- اتصال دیتابیس در `.env` با `DB_CONNECTION=sqlite` تنظیم شده است. برای سوییچ به MariaDB در Docker Compose، مقدار را به `mariadb` تغییر داده و مقادیر کامنت‌شده `DB_HOST` / `DB_PORT` / `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` را از حالت کامنت خارج و تکمیل کنید. مایگریشن‌ها مستقل از دیتابیس نوشته شده‌اند و نیازی به تغییر ندارند.
+- این ریپازیتوری عمداً فاقد Dockerfile، docker-compose.yml یا هرگونه پیکربندی استقرار است؛ این موارد در ادامه‌ی دوره به‌صورت دستی اضافه می‌شوند.
+
+## تست‌ها
+
+```bash
+php artisan test
+```
