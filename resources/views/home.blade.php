@@ -16,6 +16,12 @@
                     <span class="text-brand">تجربه کار و بازی</span> شما را بهتر می‌کند
                 </h1>
 
+
+                <h1 class="mt-6 text-4xl font-extrabold leading-tight text-neutral-900 sm:text-5xl">
+                
+                    <span class="text-brand">سلام بر تو رفیق</span>
+                </h1>
+
                 <p class="mx-auto mt-6 max-w-md text-base leading-7 text-neutral-500 lg:mx-0">
                     از هدفون و کیبورد گرفته تا لوازم جانبی رومیزی؛ نکسا شاپ محصولاتی با کیفیت مطمئن و قیمت منصفانه برای میز کار شما فراهم کرده است.
                 </p>
