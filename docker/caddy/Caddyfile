@@ -1,0 +1,12 @@
+# Production Caddy config: terminates TLS and reverse proxies to the
+# internal Nginx webserver. Caddy handles certificate issuance/renewal
+# automatically via Let's Encrypt (HTTP-01), no manual setup required.
+sepehrdev.dev {
+    reverse_proxy webserver:80
+}
+
+# www.sepehrdev.dev redirects to the bare domain (Caddy auto-manages
+# HTTPS for this host too, so the redirect itself is served over TLS).
+www.sepehrdev.dev {
+    redir https://sepehrdev.dev{uri} permanent
+}

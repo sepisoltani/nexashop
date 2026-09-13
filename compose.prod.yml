@@ -23,10 +23,26 @@ services:
             target: webserver
         container_name: nexashop_webserver_prod
         restart: unless-stopped
-        ports:
-            - "80:80"
+        # No published ports: only reachable from other containers on the
+        # `nexashop` network (Caddy proxies to it as `webserver:80`).
         depends_on:
             - app
+        networks:
+            - nexashop
+
+    caddy:
+        image: caddy:2-alpine
+        container_name: nexashop_caddy_prod
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            - webserver
         networks:
             - nexashop
 
@@ -53,6 +69,8 @@ services:
 volumes:
     app_storage:
     db_data:
+    caddy_data:
+    caddy_config:
 
 networks:
     nexashop:
